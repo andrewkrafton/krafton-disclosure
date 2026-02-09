@@ -63,10 +63,10 @@ const DK = `[크래프톤 공시기준표 - FY2024 연결재무제표 기준, �
 
 ■ 주요사항보고서(자본시장법161조): 자산양수도(자산10%=7,919억), 영업양수도(자산/매출/부채10%), 합병/분할(3일이내)
 ■ 공정공시: 중요정보 선별제공시 사전(10분전) 공시. 대상: 사업계획, 영업실적전망, 잠정실적
-■ 공정거래위원회: 자산5조이상 기업집단. 대규모내부거래(50억이상 또는 MAX[자본금,자본총계]x5%) 이사회의결후 1일내
-■ 불성실공시: 10점->매매거래정지1일, 15점->관리종목. 벌점1~4점:400만원/점, 5~9점:1,000만원/점, 10점+:2,000만원/점
+■ 공정거래위원회: 자산5조이상 기업집단. 대규모내부거래(50억이상 또는 MAX[자본금,자본총계]×5%) 이사회의결후 1일내
+■ 불성실공시: 10점→매매거래정지1일, 15점→관리종목. 벌점1~4점: 400만원/점, 5~9점: 1,000만원/점, 10점+: 2,000만원/점
 ■ 자율공시: 수시공시 미달시 가능. 번복시 불성실공시 해당
-■ 종속회사: 지배회사 연결F/S에 중대한 영향시 지배회사 공시의무 발생`;
+■ 종속회사: 지배회사 연결F/S에 중대한 영향시 지배회사 공시의무 발생. 종속회사 담당자가 지배회사 공시부서에 즉시 전달해야 함`;
 
 const SP = `당신은 크래프톤(KRAFTON)의 공시 전문 AI 어시스턴트입니다.
 [역할] 계약서/거래 내용에 대해 공시 대상 여부를 정확하게 판단합니다.
@@ -74,8 +74,7 @@ const SP = `당신은 크래프톤(KRAFTON)의 공시 전문 AI 어시스턴트�
 - 비대상이면: 이유 + 자율공시 해당 여부 검토
 - 불확실하면: "확인이 필요합니다" 또는 "IR팀과 협의하시기 바랍니다"
 - 추측/확인되지 않은 내용을 단정적으로 말하지 않습니다
-[답변형식] 핵심 결론 먼저 -> 근거 제시. 마크다운 사용. 금액비교 반드시 포함. 복수 항목 해당시 모두 안내.
-항상 한국어로 답변하세요.
+[답변형식] 핵심 결론 먼저 → 근거 제시. 마크다운 사용. 금액비교 반드시 포함. 복수 항목 해당시 모두 안내.
 ${DK}`;
 
 async function callAPI(msgs, fileData) {
@@ -89,18 +88,10 @@ async function callAPI(msgs, fileData) {
     role: m.role,
     content: m.role === "user" && fileData && i === msgs.length - 1 ? content : m.content,
   }));
-
-  const r = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4000, system: SP, messages: apiMsgs }),
   });
-
-  if (!r.ok) {
-    const err = await r.json().catch(() => ({}));
-    throw new Error(err.error?.message || err.error || `API error ${r.status}`);
-  }
-
   const d = await r.json();
   return d.content?.map(b => b.text || "").join("") || "응답을 생성하지 못했습니다.";
 }
@@ -179,8 +170,8 @@ export default function App() {
 
   const pickFile = (f) => {
     if(!f) return;
-    if(!["application/pdf","image/png","image/jpeg","image/webp"].includes(f.type)){alert("PDF/이미지만 가능합니다.");return;}
-    if(f.size>20*1024*1024){alert("20MB 이하만 가능합니다.");return;}
+    if(!["application/pdf","image/png","image/jpeg","image/webp"].includes(f.type)){alert("PDF/이미지만 가능");return;}
+    if(f.size>20*1024*1024){alert("20MB 이하만 가능");return;}
     const rd=new FileReader(); rd.onload=()=>setFile({name:f.name,type:f.type,size:f.size,base64:rd.result.split(",")[1]}); rd.readAsDataURL(f);
   };
 
@@ -194,10 +185,10 @@ export default function App() {
       const resp=await callAPI(am,cf?{...cf,msg:q||undefined}:null);
       setMsgs(p=>[...p,{role:"assistant",content:resp}]);
       let r="확인필요";
-      if(resp.includes("공시 대상입니다")||resp.includes("공시대상입니다")||resp.includes("공시대상")||resp.includes("✅")) r="공시대상";
-      if(resp.includes("공시 대상이 아닙")||resp.includes("해당하지 않")||resp.includes("미달")) r="비공시";
+      if(resp.includes("공시 대상입니다")||resp.includes("공시대상입니다")||resp.includes("✅")) r="공시대상";
+      else if(resp.includes("공시 대상이 아닙")||resp.includes("해당하지 않")||resp.includes("미달")) r="비공시";
       addHist({q:um.content.slice(0,200),r,fn:cf?.name||null});
-    } catch(e) { setMsgs(p=>[...p,{role:"assistant",content:`⚠️ API 오류: ${e.message}\n\nVercel 환경변수에 ANTHROPIC_API_KEY가 설정되어 있는지 확인해주세요.`}]); }
+    } catch(e) { setMsgs(p=>[...p,{role:"assistant",content:`⚠️ API 오류: ${e.message}`}]); }
     setLd(false);
   };
 
@@ -254,7 +245,7 @@ export default function App() {
       {/* Input */}
       <div style={{position:"sticky",bottom:0,background:"linear-gradient(to top,#f8fafc 85%,transparent)",padding:"8px 16px 18px"}}>
         <div style={{maxWidth:880,margin:"0 auto",display:"flex",gap:8,alignItems:"flex-end"}}>
-          <input ref={fRef} type="file" accept=".pdf,image/*" style={{display:"none"}} onChange={e=>{pickFile(e.target.files[0]);e.target.value="";}}/>
+          <input ref={fRef} type="file" accept=".pdf,image/*" style={{display:"none"}} onChange={e=>pickFile(e.target.files[0])}/>
           <button onClick={()=>!ld&&fRef.current?.click()} disabled={ld} style={{width:40,height:40,borderRadius:10,border:"1.5px solid #d1d5db",background:"#f8fafc",cursor:ld?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,opacity:ld?.5:1}} title="계약서 업로드">📎</button>
           <div style={{flex:1,background:"#fff",borderRadius:18,border:"1.5px solid #d1d5db",padding:"10px 16px",display:"flex",alignItems:"center",boxShadow:"0 2px 10px rgba(0,0,0,.04)"}}>
             <textarea value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}} placeholder={file?"추가 질문을 입력하거나 바로 전송...":"공시 관련 질문 또는 거래 내용을 입력하세요..."} rows={1} disabled={ld} style={{flex:1,border:"none",background:"transparent",fontSize:13.5,color:"#1e293b",resize:"none",fontFamily:"inherit",lineHeight:1.4}}/>
