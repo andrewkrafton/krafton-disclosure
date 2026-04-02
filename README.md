@@ -1,6 +1,6 @@
-# NEOWIZ 공시 판단 AI 어시스턴트
+# KRAFTON 공시 판단 AI 어시스턴트
 
-네오위즈(KOSDAQ: 095660) 임직원을 위한 공시 판단 AI 시스템입니다.
+크래프톤 임직원을 위한 공시 판단 AI 시스템입니다.
 
 ## 주요 기능
 
@@ -11,9 +11,10 @@
 
 ## 적용 기준
 
-- **재무기준**: FY2025 연결재무제표 (자산 6,800억 / 부채 1,235억 / 자기자본 5,565억 / 매출 4,327억)
-- **적용규정**: 코스닥시장 공시규정, 업무규정, 업무규정 시행세칙, 자본시장법
-- **종속기업**: 21개사 포함
+- **재무기준**: FY2025 연결재무제표 (자산 94,336억 / 부채 22,495억 / 자기자본 71,841억 / 매출 33,265억)
+- **적용규정**: 코스피시장 공시규정, 업무규정, 업무규정 시행세칙, 자본시장법
+- **대규모법인**: 자산총액 2조원 이상 대기업 기준 적용
+- **적용기간**: 2026년 4월 1일 ~ 2027년 3월 31일
 
 ## 배포 방법
 
@@ -22,9 +23,9 @@
 ```bash
 git init
 git add .
-git commit -m "NEOWIZ 공시 판단 AI 어시스턴트"
+git commit -m "KRAFTON 공시 판단 AI 어시스턴트"
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/neowiz-disclosure-chatbot.git
+git remote add origin https://github.com/YOUR_USERNAME/krafton-disclosure.git
 git push -u origin main
 ```
 
