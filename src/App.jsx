@@ -431,7 +431,7 @@ function MessageBubble({ message }) {
   const isUser = message.isUser;
   return (
     <div className={`message-bubble ${isUser ? "user" : "assistant"}`}>
-      {!isUser && <div className="message-avatar">N</div>}
+      {!isUser && <div className="message-avatar">K</div>}
       <div className={`message-content ${isUser ? "user" : ""}`}>
         {message.file && (
           <div className="message-file-info">
@@ -654,7 +654,7 @@ export default function App() {
   const [messages, setMessages] = useState([
     {
       isUser: false,
-      text: `안녕하세요. **Neowiz 공시 판단 시스템**입니다.
+      text: `안녕하세요. **Krafton 공시 판단 시스템**입니다.
 
 PDF/이미지 계약서를 업로드하거나, 공시 관련 질문을 입력해주세요.
 
@@ -898,8 +898,8 @@ PDF/이미지 계약서를 업로드하거나, 공시 관련 질문을 입력해
   const SUGGESTED = [
     "150억원 규모의 타법인 주식 취득은 공시 대상인가요?",
     "120억원 판매계약 체결 시 공시가 필요한가요?",
-    "네오위즈는 공정거래위원회 공시 대상 기업인가요?",
-    "현재 네오위즈의 공시 기준금액을 알려주세요",
+    "크래프톤은 공정거래위원회 공시 대상 기업인가요?",
+    "현재 크래프톤의 공시 기준금액을 알려주세요",
     "종속회사의 거래도 공시 대상이 될 수 있나요?",
     "자율공시는 언제 해야 하나요?",
     "불성실공시 벌점은 어떻게 부과되나요?",
@@ -933,9 +933,9 @@ PDF/이미지 계약서를 업로드하거나, 공시 관련 질문을 입력해
 
       {/* Header */}
       <div className="app-header">
-        <div className="header-logo">N</div>
+        <div className="header-logo">K</div>
         <div className="header-info">
-          <div className="header-title">Neowiz 공시 판단 시스템</div>
+          <div className="header-title">Krafton 공시 판단 시스템</div>
           <div className="header-subtitle">
             Claude API · FY2025 연결 기준 · 종속기업 21개사 포함
             {regulationsLoaded && (
