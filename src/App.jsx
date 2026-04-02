@@ -77,9 +77,8 @@ function fmtRates(rd) {
 }
 
 const REG_FILES = [
-  { name: "코스닥시장 공시규정", path: "/kosdaq_disclosure_regulation.txt", full: true },
-  { name: "코스닥시장 업무규정", path: "/kosdaq_business_regulation.txt", full: false },
-  { name: "코스닥시장 업무규정 시행세칙", path: "/kosdaq_business_enforcement.txt", full: false },
+  { name: "유가증권시장 공시규정", path: "/kospi_disclosure_regulation.txt", full: true },
+  { name: "유가증권시장 공시규정 시행세칙", path: "/kospi_disclosure_enforcement.txt", full: false },
 ];
 async function loadRegs() {
   const t = [];
@@ -182,7 +181,7 @@ function Msg({ message, onCopy, onPDF, qText }) {
   const con = !isU ? conclude(message.text) : null;
   return (
     <div className={`msg ${isU?"msg-u":"msg-a"}`}>
-      {!isU && <div className="avatar">N</div>}
+      {!isU && <div className="avatar">K</div>}
       <div className={`bubble ${isU?"bbl-u":""}`}>
         {message.file?.type?.startsWith("image/") && <img src={`data:${message.file.type};base64,${message.file.base64}`} alt="" className="bbl-img"/>}
         {message.file && !message.file.type?.startsWith("image/") && <div className="bbl-file">📄 <b>{message.file.name}</b> <span className="bbl-fs">({(message.file.size/1024).toFixed(0)}KB)</span></div>}
